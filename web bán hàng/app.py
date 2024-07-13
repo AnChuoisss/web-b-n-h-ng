@@ -177,8 +177,8 @@ def delete_review(review_id):
     flash('Đánh giá đã được xóa thành công.', 'success')
     return redirect(url_for('admin'))
 
-@app.route('/about', methods=['GET', 'POST'])
-def about():
+@app.route('/review', methods=['GET', 'POST'])
+def review():
     if 'user_id' not in session:
         flash('Vui lòng đăng nhập để truy cập trang này.')
         return redirect(url_for('login'))
@@ -195,7 +195,7 @@ def about():
             conn.close()
 
             return redirect(url_for('thank_you_review'))
-    return render_template('about.html')
+    return render_template('review.html')
 @app.route('/delete_user/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
     if 'user_id' not in session or not session.get('is_admin'):
@@ -228,7 +228,7 @@ def checkout():
         conn = get_db()
         cursor = conn.cursor()
 
-        # Get cart items
+        # Nhận các mặt hàng trong giỏ
         cursor.execute('''
         SELECT ci.product_id, p.name AS product_name, ci.quantity, p.price AS price_per_unit
         FROM cart_items ci
@@ -237,7 +237,7 @@ def checkout():
         ''', (user_id,))
         cart_items = cursor.fetchall()
 
-        # Insert into orders_info table
+        # thêm vào orders_info table
         for item in cart_items:
             product_id = item['product_id']
             product_name = item['product_name']
@@ -249,7 +249,7 @@ def checkout():
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now','localtime'))
             ''', (user_id, username, name, age, address, phone, gender, product_id, product_name, quantity, price_per_unit))
 
-        # Clear cart items after order
+        # xóa các dữ liệu sau khi order
         cursor.execute('DELETE FROM cart_items WHERE user_id = ?', (user_id,))
         conn.commit()
         conn.close()
@@ -268,7 +268,7 @@ def admin_orders():
     conn = get_db()
     cursor = conn.cursor()
 
-    # Fetch orders information
+    # Lấy thông tin đơn hàng
     cursor.execute('''
         SELECT oi.id, oi.username, oi.name, oi.age, oi.address, oi.phone, oi.gender, oi.product_name, oi.quantity, oi.price_per_unit,
                (oi.quantity * oi.price_per_unit) AS total_price
@@ -288,7 +288,7 @@ def delete_order_admin(order_id):
     conn = get_db()
     cursor = conn.cursor()
 
-    # Delete order from orders_info table
+    # xóa đơn hàng khỏi bảng orders_info table
     cursor.execute('DELETE FROM orders_info WHERE id = ?', (order_id,))
     conn.commit()
     conn.close()
@@ -303,7 +303,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Ensure the upload folder exists
+# Đảm bảo thư mục tải lên tồn tại trong thưu mục upload
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
@@ -357,7 +357,7 @@ def order_history():
 def search():
     if request.method == 'POST':
         query = request.form.get('query')
-        # Xử lý tìm kiếm ở đây (ví dụ: từ cơ sở dữ liệu)
+        # Xử lý tìm kiếm ở đây trong cơ sở dữ liệu
         conn = get_db()
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM products WHERE name LIKE ?", ('%' + query + '%',))
@@ -365,6 +365,6 @@ def search():
         conn.close()
         return render_template('home.html', products=products, query=query)
 
-    return redirect(url_for('home'))  # Nếu là GET request hoặc không có kết quả, chuyển hướng về trang chủ
+    return redirect(url_for('home'))
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0', port=5000)

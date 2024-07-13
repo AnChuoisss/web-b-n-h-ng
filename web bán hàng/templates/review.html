@@ -2,35 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/review.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/amazon-header.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/amazon.css') }}">
 </head>
-<style>        
-.add-to-cart-button a {
-    color: inherit; /* Ensures the link inherits the color of the parent button */
-    text-decoration: none; /* Removes the underline from the link */
-    display: block; /* Makes the link block-level so it fills the button */
-    padding: 10px 20px; /* Adds padding to the link */
-}
-
-.add-to-cart-button {
-    border: 2px solid transparent; /* Initial border is transparent */
-    background-color: #f7d749; /* Button background color */
-    color: white; /* Button text color */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: border-color 0.3s ease; /* Smooth transition for border color */
-    width: 100%;
-    padding: 8px;
-    border-radius: 50px;
-}
-
-.add-to-cart-button:hover {
-    border-color: #f08804; /* Changes border color on hover */
-}  
-</style>
 <body>
+    {% if session.get('username') %}
+    <p>Logged in as {{ session['username'] }}</p>
+    <a href="{{ url_for('logout') }}">Logout</a>
+{% else %}
+    <a href="{{ url_for('login') }}">Login</a>
+    <a href="{{ url_for('register') }}">Register</a>
+
+{% endif %}
     <div class="amazon-header">
         <div class="amazon-header-left-section">
             <a href="{{ url_for('home')}}" class="header-link">
@@ -76,54 +62,18 @@
             </a>
         </div>
     </div>
-    <div class="main">
-        <div class="products-grid js-products-grid">
-            {% for product in products %}
-                <div class="product-container">
-                    <div class="product-image-container">
-                        <img class="product-image"
-                            src="{{ url_for('static', filename='uploads/' + product.image) }}" alt="{{ product.name }}" width="100">
-                    </div>
-                    <div class="product-name limit-text-to-2-lines">
-                         {{ product.name }}
-                    </div>
-                    <div class="product-price">
-                        <b>${{ product.price }}</b>
-                    </div>
-                    <div class="product-spacer"></div>
-                    <div class="added-to-cart">
-                        <img src="{{ url_for('static', filename='images/icons/checkmark.png') }}">
-                    </div>
-                    <button class="add-to-cart-button button-primary">
-                        <a href="{{ url_for('add_to_cart', product_id=product['id']) }}">Add to Cart</a>
-                    </button>
-                </div>
-            {% endfor %}
+    <div class="container">
+        <div class="form-container">
+            <h2>Product Review</h2>
+            <form method="POST">
+                <input type="hidden" name="review_form" value="review_form" >
+                <label for="product_review">Review:</label>
+                <textarea id="product_review" name="product_review" placeholder="điền tên sản phẩm: bình luận về sản phẩm" required></textarea>
+                <label for="rating">Rating:</label>
+                <input type="number" id="rating" name="rating" min="1" max="5" required>
+                <button type="submit1">Submit</button>
+            </form>
         </div>
     </div>
-    {% if query %}
-    <ul>
-        {% if search_results %}
-            {% for product in search_results %}
-                <li>
-                    <img src="{{ url_for('static', filename='uploads/' + product.image) }}" alt="{{ product.name }}" width="100">
-                    <h2>{{ product.name }}</h2>
-                    <p>{{ product.description }}</p>
-                    <p>$ {{ product.price }}</p>
-                    <a href="{{ url_for('add_to_cart', product_id=product['id']) }}">Add to Cart</a>
-                </li>
-            {% endfor %}
-        {% endif %}
-    </ul>
-{% endif %}
 </body>
 </html>
-
-
-
-
-
-
-
-
-
