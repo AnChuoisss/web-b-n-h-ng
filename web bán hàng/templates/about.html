@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/review.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/amazon-header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/amazon.css') }}">
+</head>
+<body>
+    {% if session.get('username') %}
+    <p>Logged in as {{ session['username'] }}</p>
+    <a href="{{ url_for('logout') }}">Logout</a>
+{% else %}
+    <a href="{{ url_for('login') }}">Login</a>
+    <a href="{{ url_for('register') }}">Register</a>
+
+{% endif %}
+    <div class="amazon-header">
+        <div class="amazon-header-left-section">
+            <a href="{{ url_for('home')}}" class="header-link">
+                <img class="amazon-logo"
+                    src="{{ url_for('static', filename='images/amazon-logo-white.png') }}">
+                <img class="amazon-mobile-logo"
+                    src="{{ url_for('static', filename='images/amazon-mobile-logo-white.png') }}">
+            </a>
+        </div>
+        <li>
+            <form action="{{ url_for('search') }}" method="post" class="search-form">
+                <div class="amazon-header-middle-section">
+                    <input class="search-bar " type="text" name="query" placeholder="Search...">
+                    <button class="search-button " type="submit">
+                        <img class="search-icon" src="{{ url_for('static', filename='images/icons/search-icon.png') }}" alt="Search">
+                    </button>
+                </div>
+            </form>
+        </li>
+        <div class="amazon-header-right-section">
+            <div >
+                {% if session.get('username') %}
+                    <a class="orders-link header-link" href="{{ url_for('logout') }}">
+                    <p>{{ session['username'] }}</p>
+                       Logout 
+                    </a>
+                {% else %}
+                <a class="orders-link header-link" href="{{ url_for('login') }}">
+                    <span class="returns-text" >Login </span>
+                    <span class="orders-text" > & Register </span>
+                {% endif %}
+                </a>
+            </div>
+            <a class="orders-link header-link" href="{{ url_for('about') }}" >Review</a>
+            <a class="orders-link header-link" href="{{ url_for('order_history') }}">
+                <span class="returns-text">Returns</span>
+                <span class="orders-text">& Orders</span>
+            </a>
+            <a class="cart-link header-link" href="{{ url_for('cart') }}">
+                <img class="cart-icon" src="{{ url_for('static', filename='images/icons/cart-icon.png') }}">
+                <div class="cart-quantity js-cart-quantity"></div>
+                <div class="cart-text">Cart</div>
+            </a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="form-container">
+            <h2>Product Review</h2>
+            <form method="POST">
+                <input type="hidden" name="review_form" value="review_form" >
+                <label for="product_review">Review:</label>
+                <textarea id="product_review" name="product_review" placeholder="điền tên sản phẩm: bình luận về sản phẩm" required></textarea>
+                <label for="rating">Rating:</label>
+                <input type="number" id="rating" name="rating" min="1" max="5" required>
+                <button type="submit1">Submit</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

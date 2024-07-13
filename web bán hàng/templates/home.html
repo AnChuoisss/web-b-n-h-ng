@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/amazon-header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/amazon.css') }}">
+</head>
+<style>        
+.add-to-cart-button a {
+    color: inherit; /* Ensures the link inherits the color of the parent button */
+    text-decoration: none; /* Removes the underline from the link */
+    display: block; /* Makes the link block-level so it fills the button */
+    padding: 10px 20px; /* Adds padding to the link */
+}
+
+.add-to-cart-button {
+    border: 2px solid transparent; /* Initial border is transparent */
+    background-color: #f7d749; /* Button background color */
+    color: white; /* Button text color */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: border-color 0.3s ease; /* Smooth transition for border color */
+    width: 100%;
+    padding: 8px;
+    border-radius: 50px;
+}
+
+.add-to-cart-button:hover {
+    border-color: #f08804; /* Changes border color on hover */
+}  
+</style>
+<body>
+    <div class="amazon-header">
+        <div class="amazon-header-left-section">
+            <a href="{{ url_for('home')}}" class="header-link">
+                <img class="amazon-logo"
+                    src="{{ url_for('static', filename='images/amazon-logo-white.png') }}">
+                <img class="amazon-mobile-logo"
+                    src="{{ url_for('static', filename='images/amazon-mobile-logo-white.png') }}">
+            </a>
+        </div>
+        <li>
+            <form action="{{ url_for('search') }}" method="post" class="search-form">
+                <div class="amazon-header-middle-section">
+                    <input class="search-bar " type="text" name="query" placeholder="Search...">
+                    <button class="search-button " type="submit">
+                        <img class="search-icon" src="{{ url_for('static', filename='images/icons/search-icon.png') }}" alt="Search">
+                    </button>
+                </div>
+            </form>
+        </li>
+        <div class="amazon-header-right-section">
+            <div >
+                {% if session.get('username') %}
+                    <a class="orders-link header-link" href="{{ url_for('logout') }}">
+                    <p>{{ session['username'] }}</p>
+                       Logout 
+                    </a>
+                {% else %}
+                <a class="orders-link header-link" href="{{ url_for('login') }}">
+                    <span class="returns-text" >Login </span>
+                    <span class="orders-text" > & Register </span>
+                {% endif %}
+                </a>
+            </div>
+            <a class="orders-link header-link" href="{{ url_for('about') }}" >Review</a>
+            <a class="orders-link header-link" href="{{ url_for('order_history') }}">
+                <span class="returns-text">Returns</span>
+                <span class="orders-text">& Orders</span>
+            </a>
+            <a class="cart-link header-link" href="{{ url_for('cart') }}">
+                <img class="cart-icon" src="{{ url_for('static', filename='images/icons/cart-icon.png') }}">
+                <div class="cart-quantity js-cart-quantity"></div>
+                <div class="cart-text">Cart</div>
+            </a>
+        </div>
+    </div>
+    <div class="main">
+        <div class="products-grid js-products-grid">
+            {% for product in products %}
+                <div class="product-container">
+                    <div class="product-image-container">
+                        <img class="product-image"
+                            src="{{ url_for('static', filename='uploads/' + product.image) }}" alt="{{ product.name }}" width="100">
+                    </div>
+                    <div class="product-name limit-text-to-2-lines">
+                         {{ product.name }}
+                    </div>
+                    <div class="product-price">
+                        <b>${{ product.price }}</b>
+                    </div>
+                    <div class="product-spacer"></div>
+                    <div class="added-to-cart">
+                        <img src="{{ url_for('static', filename='images/icons/checkmark.png') }}">
+                    </div>
+                    <button class="add-to-cart-button button-primary">
+                        <a href="{{ url_for('add_to_cart', product_id=product['id']) }}">Add to Cart</a>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% if query %}
+    <ul>
+        {% if search_results %}
+            {% for product in search_results %}
+                <li>
+                    <img src="{{ url_for('static', filename='uploads/' + product.image) }}" alt="{{ product.name }}" width="100">
+                    <h2>{{ product.name }}</h2>
+                    <p>{{ product.description }}</p>
+                    <p>$ {{ product.price }}</p>
+                    <a href="{{ url_for('add_to_cart', product_id=product['id']) }}">Add to Cart</a>
+                </li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+{% endif %}
+</body>
+</html>
+
+
+
+
+
+
+
+
+
