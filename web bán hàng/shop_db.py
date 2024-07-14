@@ -20,10 +20,14 @@ CREATE TABLE IF NOT EXISTS orders (
 # Create reviews table
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS reviews (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     product_review TEXT NOT NULL,
-    rating INTEGER NOT NULL
-)
+    name TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    product_name TEXT NOT NULL,
+    rating INTEGER NOT NULL CHECK(rating >= 1 AND rating <= 5)
+);
+
 ''')
 
 # Create users table

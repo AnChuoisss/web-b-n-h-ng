@@ -187,14 +187,20 @@ def review():
         if 'review_form' in request.form:
             product_review = request.form['product_review']
             rating = request.form['rating']
-
+            name = session['username']  # Lấy tên người đánh giá từ session
+            phone = request.form['phone']  # Lấy số điện thoại từ form
+            product_name = request.form['product_name']  # Lấy tên sản phẩm từ form
             conn = get_db()
             cursor = conn.cursor()
-            cursor.execute("INSERT INTO reviews (product_review, rating) VALUES (?, ?)", (product_review, rating))
+            cursor.execute("INSERT INTO reviews (product_review, name, phone, product_name, rating) VALUES (?, ?, ?, ?, ?)",
+                           (product_review, name, phone, product_name, rating))
             conn.commit()
             conn.close()
 
             return redirect(url_for('thank_you_review'))
+    
+    return render_template('review.html')
+
     return render_template('review.html')
 @app.route('/delete_user/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
@@ -228,7 +234,7 @@ def checkout():
         conn = get_db()
         cursor = conn.cursor()
 
-        # Nhận các mặt hàng trong giỏ
+        # nhận các đơn hàng
         cursor.execute('''
         SELECT ci.product_id, p.name AS product_name, ci.quantity, p.price AS price_per_unit
         FROM cart_items ci

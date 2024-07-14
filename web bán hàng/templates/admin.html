@@ -94,7 +94,7 @@
         <a href="{{ url_for('home') }}">Trang Chủ</a>
         <a href="{{ url_for('logout') }}">Đăng Xuất</a>
         <a href="{{ url_for('add_product') }}"> Thêm sản phẩm</a>
-        
+        <a href="{{ url_for('admin_orders') }}"> Thêm sản phẩm</a>
     </nav>
     <div class="container">
         <h2>Reviews</h2>
@@ -105,6 +105,9 @@
                     <th>ID</th>
                     <th>Đánh giá</th>
                     <th>Xếp hạng</th>
+                    <th>Tên</th>
+                    <th>Số điện thoại</th>
+                    <th>Tên sản phẩm</th>
                 </tr>
             </thead>
             <tbody>
@@ -118,6 +121,9 @@
                     <td>{{ review[0] }}</td>
                     <td>{{ review[1] }}</td>
                     <td>{{ review[2] }}</td>
+                    <td>{{ review[3] }}</td>  <!-- Thêm tên vào table -->
+                    <td>{{ review[4] }}</td>  <!-- Thêm số điện thoại vào table -->
+                    <td>{{ review[5] }}</td>  <!-- Thêm tên sản phẩm vào table -->
                 </tr>
                 {% endfor %}
             </tbody>
